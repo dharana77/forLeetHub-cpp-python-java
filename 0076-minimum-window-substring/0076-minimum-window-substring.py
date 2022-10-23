@@ -1,45 +1,49 @@
-from collections import defaultdict
+from collections import Counter
+
 
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        need = collections.Counter(t)
-        missing = len(t)
-        left = start = end = 0
+        n = Counter(t)
 
-        for right, char in enumerate(s, 1):
-            missing -= need[char] > 0
-            need[char] -= 1
+        missings = len(t)
 
-            if missing == 0:
-                while left < right and need[s[left]] < 0:
-                    need[s[left]] += 1
-                    left += 1
+        left = start = 0
+        end = len(s)
+        if len(t) == 1:
+            if t in s:
+                return t
+            else:
+                return ""
+        if len(t) > len(s):
+            return ""
 
-                if not end or right - left <= end - start:
-                    start, end = left, right
-                    need[s[left]] += 1
-                    missing += 1
-                    left += 1
-        return s[start:end]
+        for right, v in enumerate(s, 1):
+            if n[v] > 0:
+                missings -= 1
+            n[v] -= 1
 
+            if missings == 0:
 
-    def minWindowCounter(self, s: str, t: str) -> str:
-        t_count = collections.Counter(t)
-        current_count = collections.Counter()
+                if (end - start) > (right - left):
+                    end = right
+                    start = left
 
-        start = float('-inf')
-        end = float('-inf')
-
-        left = 0
-        for right, char in enumerate(s, 1):
-            current_count[char] += 1
-
-            while current_count & t_count == t_count:
-                if right - left < end - start:
-                    start, end = left, right
-                current_count[s[left]] -= 1
+                n[s[left]] += 1
+                if n[s[left]] > 0:
+                    missings += 1
                 left += 1
 
-        return s[start:end] if end - start <= len(s) else '' 
-       
-        
+                while n[s[left]] < 0 and left <= right:
+                    n[s[left]] += 1
+                    left += 1
+
+                if missings == 0:
+                    if (end - start) > (right - left):
+                        end = right
+                        start = left
+
+        if end == len(s) and start == 0:
+            if (Counter(t) & Counter(s)) != Counter(t):
+                return ""
+
+        return s[start:end]
