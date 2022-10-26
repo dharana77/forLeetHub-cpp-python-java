@@ -24,3 +24,4 @@ class Solution:
                 self.ans = max(self.ans, sum(flags))
                 self.dfs(arr[i+1:], flags)
             flags = prev_flags[:]
+            
