@@ -1,125 +1,67 @@
-class Node(object):
+
+class Trie:
     def __init__(self):
-        self.endFlag = False
         self.children = {}
-
-
-class Trie(object):
-    def __init__(self):
-        self.root = Node()
-
-    def insert(self, word: str):
-        curr_head = self.root
-
-        for char in word:
-            if char not in curr_head.children:
-                curr_head.children[char] = Node()
-            curr_head = curr_head.children[char]
-
-        curr_head.endFlag = True
-
-    def search(self, word: str):
-        curr_node = self.root
-
-        for char in word:
-            if char in curr_node.children:
-                curr_node = curr_node.children[char]
+        self.isWord = False
+        
+    def insert(self, word):
+        cur = self
+        for c in word:
+            if c not in cur.children:
+                cur.children[c] = Trie()
+            cur = cur.children[c]
+        cur.isWord = True
+        
+    def deleteWord(self, word):
+        cur = self
+        node_key = list()
+        for c in word:
+            node_key.append((cur, c))
+            cur = cur.children[c]
+        
+        for parent, child in reversed(node_key):
+            target_node = parent.children[child]
+            if len(target_node.children) == 0:
+                del parent.children[child]
             else:
-                return False
-
-        if curr_node.endFlag:
-            return True
-    
-    def start_with(self, prefix: str):
-        curr_node = self.root
-        for char in prefix:
-            if char not in curr_node.children:
-                return False
-            curr_node = curr_node.children[char]
-        return True
-
-    
-    def delete(self, word):
-        def recursive(node, word, i):
-            if i == len(word):
-                if not node.endFlag:
-                    return False
-                node.endFlag = False
-                return (len(node.children) == 0)
-            if word[i] not in node.children:
-                return False
-            need_delete = recursive(node.children[word[i], word, i+1])
-
-            if need_delete:
-                node.children.pop(word[i])
-                return (len(node.children) == 0)
-            return False
-        recursive(self.root, word, 0)
-
+                return
+        
 class Solution:
-    answer = list()
-    dx = list()
-    dy = list()
-    m = 0
-    n = 0
-    words = list()
-    ct = 0
 
-    def __init__(self):
-        self.answer = list()
-        self.dx = [1,-1, 0,0]
-        self.dy = [0, 0, -1, 1]
-        self.ct = 0
-        self.m = 0
-        self.n = 0
-        self.words = list()
+    def findWords(self, board:     list[list[str]], words: list[str]) -> list[str]:
         
-    def findWords(self, board: list[list[str]], words: list[str]) -> list[str]:
-        
-        self.m = len(board)
-        self.n = len(board[0])
-        self.words = words
-        
-        self.trie = {}
-
+        answer = list()
+        trie = Trie()
         for word in words:
-            t = self.trie
-            for c in word:
-                if c not in t:
-                    t[c] = {}
-                t = t[c]
-
-            t['#'] = '#'
+            trie.insert(word)
         
-        print(self.trie)
-        self.answer = list()
+        row, col = len(board), len(board[0])
+        visited = set()
         
-        for y in range(self.m):
-            for x in range(self.n):
-                self.dfs(board, self.trie, y, x, '')
-
-        return self.answer
-
-    
-    def dfs(self, board, node, y, x, word):
-        if '#' in node:
-            del node['#']
-            self.answer.append(word)
+        def dfs(r, c, node, word):
+            if (r < 0 or r >= row or c <0 or c >= col or
+               (r, c) in visited or 
+                board[r][c] not in node.children):
+                return
+            
+            visited.add((r, c))
+            node = node.children[board[r][c]]
+            word += board[r][c]
+            if node.isWord:
+                answer.append(word)
+                node.isWord = False
+                trie.deleteWord(word)
+            dfs(r+1, c, node, word)
+            dfs(r-1, c, node, word)
+            dfs(r, c+1, node, word)
+            dfs(r, c-1, node, word)
+            
+            visited.remove((r, c))
         
-        if (y < 0) or y >= len(board) or x < 0 or x >= len(board[0]):
-            return
+        for r in range(row):
+            for c in range(col):
+                dfs(r, c, trie, "")
+            
         
-        char = board[y][x]
-        if char not in node:
-            return
-        
-        next_node = node[char]
-        board[y][x] = '@'
-        for i in range(4):
-            ny, nx = y + self.dy[i], x + self.dx[i]
-            self.dfs(board, next_node, ny, nx, word+char)
-        board[y][x] = char
-        
-        if not next_node:
-            del node[char]
+        return answer
         
