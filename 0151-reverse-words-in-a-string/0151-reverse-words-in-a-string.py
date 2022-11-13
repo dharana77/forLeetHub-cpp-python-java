@@ -4,7 +4,7 @@ class Solution:
         temp = ""
         n = len(lst)
         lst = list(reversed(lst))
-        print(lst)
+        # print(lst)
         for i in range(n):
             if lst[i] != " " and lst[i] != "":
                 temp += lst[i]
