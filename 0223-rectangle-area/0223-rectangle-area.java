@@ -22,7 +22,7 @@ class Solution {
         boolean case4 = bx2 >= ax1 && by2 >= ay1 && bx2 <= ax2 && by2 <= ay2;
         boolean case5 = bx1 <= ax2 && bx2 >= ax1 && by1 <= ay2 && by2 >= ay1;
         
-        if ( case1 || case2 || case3 || case4 || case5){
+        if (case5){
             answer = sq1 + sq2 - same;
         }else{
             answer = sq1 + sq2;
