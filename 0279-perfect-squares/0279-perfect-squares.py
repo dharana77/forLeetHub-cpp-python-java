@@ -11,7 +11,7 @@ class Solution:
         for i in range(1, n+1):
             temp = list()
             tar = int(sqrt(i)) + 1
-            print(i, tar)
+            # print(i, tar)
             for j in range(1, tar):
                 temp.append(j*j)
 
