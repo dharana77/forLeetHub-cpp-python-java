@@ -6,10 +6,6 @@ class Solution:
         directions = [[0,1],[1,0],[0,-1],[-1,0]]
         m,n = len(board),len(board[0])
         
-        # (1) fewer elements in the board than the word.
-        if m*n<len(word): return False
-        
-       
         # (3) Inverse word if it's better
         # If we find the right duplicates are less than the left duplicates, reverse the word.
         left,right = 1,len(word)-2
