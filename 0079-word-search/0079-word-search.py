@@ -9,16 +9,7 @@ class Solution:
         # (1) fewer elements in the board than the word.
         if m*n<len(word): return False
         
-        # (2) fewer characters in the board than the word.
-        countB = Counter()
-        for i in range(m):
-            for j in range(n):
-                countB[board[i][j]] += 1
-        countW = Counter(word)
-        for key in countW.keys():
-            if countW[key] - countB[key] > 0:
-                return False
-        
+       
         # (3) Inverse word if it's better
         # If we find the right duplicates are less than the left duplicates, reverse the word.
         left,right = 1,len(word)-2
