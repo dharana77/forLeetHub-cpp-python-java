@@ -18,44 +18,26 @@ class Solution:
                 tot += get_sum(root.right, tot)
             return tot
             
-        total = get_sum(root, 0)
+        total_value = get_sum(root, 0)
         # print("total", total_value)
+        print(total_value)
         
         self.mini = float('inf')
         self.maxi = float('-inf')
-            
-        def helper(root):
+        
+        def calc_diff(root):
             if not root:
                 return 0
-                
-            left = helper(root.left)
-            right = helper(root.right)
-                
-            s = total-(left+right+root.val)
-            a = abs((left+right+root.val)-s)
-            if a<self.mini and (left+right+root.val)>self.maxi:
-                self.mini = a
-                self.maxi = left+right+root.val
-            return (left+right+root.val)
             
-        helper(root)
-        return (self.maxi*(total-self.maxi))%((10**9)+7)
-    
-#         def cal_diff(root):
-#             if root.left:
-#                 left = get_sum(root.left, 0)
-#                 temp = total_value - left
-#                 if temp * left > self.answer:
-#                     self.answer = temp * left
-#                 cal_diff(root.left)
+            left = calc_diff(root.left)
+            right = calc_diff(root.right)
             
-#             if root.right:
-#                 right = get_sum(root.right, 0)
-#                 temp = total_value - right
-#                 if temp * right > self.answer:
-#                     self.answer = temp * right
-#                 cal_diff(root.right)
-            
-#         cal_diff(root)
-            
-#         return self.answer % (10**9 + 7)
+            tot = total_value - (root.val + left + right)
+            # a = abs((left + right + root.val ) - tot)
+            if tot * (total_value - tot) > self.maxi:
+                self.maxi = tot * (total_value - tot)
+                # self.mini = a
+            return (left + right + root.val)
+        
+        calc_diff(root)
+        return self.maxi  % (10**9 + 7)
