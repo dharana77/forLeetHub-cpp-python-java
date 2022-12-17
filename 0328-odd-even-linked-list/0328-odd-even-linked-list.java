@@ -18,15 +18,13 @@ class Solution {
         ListNode even = head.next;
         ListNode evenPoint = even;
         
-        while (head!= null){
-            if(even != null) odd.next = even.next;
-            if(odd.next != null) odd = odd.next;
-            if(odd != null) even.next = odd.next;
-            if(even.next != null) even = even.next;
-            if(head.next != null) head = head.next.next;
-            else head = head.next;
+        while (odd.next != null && even.next != null){
+            odd.next = even.next;
+            odd = odd.next;
+            even.next = odd.next;
+            even = even.next;
         }
-        if (odd != null) odd.next = evenPoint;
+        odd.next = evenPoint;
         
         return oddPoint;
     }
